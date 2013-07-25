@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<meta charset="utf-8" />
+<style>
+	body{background-color:rgb(201,201,201);}
+	canvas{background-color:rgb(255,255,255);}
+</style>
+<script src="core.js"></script>
+<script src="rule/main.js"></script>
+<script src="data/items.js"></script>
+<script src="data/runes.js"></script>
+<script src="data/map.js"></script>
+<script src="data/monsters.js"></script>
+<canvas id="stage" width="480" height="320"></canvas>
+<script>
+	if(hasData()){
+		loadGame();
+	}else{
+		createNewGame();
+	}
+
+	main();
+</script>
