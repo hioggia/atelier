@@ -169,13 +169,17 @@ function createDenguon(denguonKey, callback){
 		stageCtx.fillText( "ATK: " + closureData.me.atk["1"] + "(条) / " + closureData.me.atk["2"] + "(筒) / " + closureData.me.atk["3"] + "(万)", 5, 240 );
 
 		stageCtx.lineWidth = 2;
-		for(var i=0,len=Math.min(12, closureData.me.runes.length);i<len;i++){
-			stageCtx.strokeRect( 5+i*40, 270, 32, 32 );
-			stageCtx.fillText( window.gameData.runes[closureData.me.runes[i]], 7+i*40, 280 );
-			window.eventAreas.push( new EventArea( 5+i*40, 270, 32, 32, selectRune, [i] ) );
+		stageCtx.font = "12px sans-serif";
+		for(var i=0,len=Math.min(14, closureData.me.runes.length);i<len;i++){
+			stageCtx.strokeStyle = ["blue","green","red"][Math.floor(~~closureData.me.runes[i]/10)-1];
+			stageCtx.strokeRect( 10+i*35, 270, 30, 30 );
+			stageCtx.fillText( window.gameData.runes[closureData.me.runes[i]], 12+i*35, 280 );
+			window.eventAreas.push( new EventArea( 10+i*35, 270, 30, 30, selectRune, [i] ) );
 		}
-
+		
+		stageCtx.font = "14px sans-serif";
 		for(var i=0,runes=closureData.runeSelect[closureData.turn],len=runes.length;i<len;i++){
+			stageCtx.strokeStyle = ["blue","green","red"][Math.floor(~~runes[i]/10)-1];
 			stageCtx.strokeRect( 5+i*40, 130, 32, 32 );
 			stageCtx.fillText( window.gameData.runes[ runes[i] ], 7+i*40, 140 );
 		}
