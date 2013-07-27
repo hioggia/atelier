@@ -115,8 +115,18 @@ function mapSelect(key){
 	createDenguon(key, showResult);
 }
 
-function showResult(resultData){
-
+function showResult(resultData, exp){
+	if(resultData){
+		resultText = "获得道具： ";
+		for(var i=0,len=resultData.length;i<len;i++){
+			window.myData.items.push(resultData[i]);
+			resultText += window.gameData.items[ resultData[i] ].name;
+		}
+		window.myData.exp += exp;
+		alert(resultText);
+		alert("获得经验： " + exp);
+	}
+	main();
 }
 
 function createDenguon(denguonKey, callback){
@@ -136,9 +146,11 @@ function createDenguon(denguonKey, callback){
 			monsters: []
 		},
 		turn: -1,
-		runeSelect: {}
+		runeSelect: {},
+		breakTurn: 3
 	},
-	monsterId = window.gameData.map[denguonKey].monster;
+	monsterId = window.gameData.map[denguonKey].monster,
+	selectTimeLimit = 0;
 	for(var i=0,len=monsterId.length;i<len;i++){
 		var monId = monsterId[i],
 		mon = {
@@ -157,6 +169,8 @@ function createDenguon(denguonKey, callback){
 	shuffle(closureData.me.runes);
 
 	function showScreen(){
+		cleanScreen();
+
 		stageCtx.save();
 		stageCtx.textBaseline = "top";
 		stageCtx.font = "28px sans-serif";
@@ -173,7 +187,7 @@ function createDenguon(denguonKey, callback){
 		for(var i=0,len=Math.min(14, closureData.me.runes.length);i<len;i++){
 			stageCtx.strokeStyle = ["blue","green","red"][Math.floor(~~closureData.me.runes[i]/10)-1];
 			stageCtx.strokeRect( 10+i*35, 270, 30, 30 );
-			stageCtx.fillText( window.gameData.runes[closureData.me.runes[i]], 12+i*35, 280 );
+			stageCtx.fillText( window.gameData.runes[closureData.me.runes[i]].name, 12+i*35, 280 );
 			window.eventAreas.push( new EventArea( 10+i*35, 270, 30, 30, selectRune, [i] ) );
 		}
 		
@@ -181,25 +195,104 @@ function createDenguon(denguonKey, callback){
 		for(var i=0,runes=closureData.runeSelect[closureData.turn],len=runes.length;i<len;i++){
 			stageCtx.strokeStyle = ["blue","green","red"][Math.floor(~~runes[i]/10)-1];
 			stageCtx.strokeRect( 5+i*40, 130, 32, 32 );
-			stageCtx.fillText( window.gameData.runes[ runes[i] ], 7+i*40, 140 );
+			stageCtx.fillText( window.gameData.runes[ runes[i] ].name, 7+i*40, 140 );
 		}
 
 		stageCtx.restore();
 	}
 
 	function selectRune(key){
-		var nowSelect = closureData.me.runes.splice(key,1);
-		closureData.runeSelect[closureData.turn].push( nowSelect[0] );
 
-		cleanScreen();
+		var nowSelect = closureData.me.runes.splice(key,1)[0],
+			lastSelect = closureData.runeSelect[closureData.turn][closureData.runeSelect[closureData.turn].length-1];
+		if( lastSelect == undefined || nowSelect.ten == lastSelect.ten || nowSelect.one == lastSelect.one ){
+			closureData.runeSelect[closureData.turn].push( nowSelect );
+		}else{
+			closureData.breakTurn--;
+			if(closureData.breakTurn <= 0){
+				clearTimeout(selectTimeLimit);
+				beginAtk();
+				return;
+			}
+		}
+		
 		showScreen();
+	}
+
+	function beginAtk(){
+		var list = closureData.runeSelect[closureData.turn],
+			combo = {"1": 0, "2": 0, "3": 0},
+			multi = {"1": 1, "2": 1, "3": 1};
+
+		for(var i=0,len=list.length;i<len;i++){
+			var data = window.gameData.runes[ list[i] ];
+			combo[data.ten]++;
+		}
+		for(var i=0,len=list.length;i<len;i+=3){
+			var a=window.gameData.runes[ list[i] ],b=window.gameData.runes[ list[i+1] ],c=window.gameData.runes[ list[i+2] ];
+			if(!!a && !!b && !!c){
+				if(a.ten == b.ten == c.ten){
+					if(a.one == b.one == c.one){
+						multi[a.ten]*=5;
+					}else{
+						var a1=a.one,b1=b.one,c1=c.one,t;
+						if(a1>b1){
+							t=b1;b1=a1;a1=t;
+						}
+						if(a1>c1){
+							t=c1;c1=a1;a1=t;
+						}
+						if(b1>c1){
+							t=c1;c1=b1;b1=t;
+						}
+						if(a1+2 == b1+1 == c1){
+							multi[a.ten]*=3;
+						}else{
+							multi[a.ten]*=1.5;
+						}
+					}
+				}
+			}
+		}
+
+		var damage = closureData.me.atk["1"]*combo["1"]*multi["1"]
+					+ closureData.me.atk["2"]*combo["2"]*multi["2"]
+					+ closureData.me.atk["3"]*combo["3"]*multi["3"];
+		console.log(damage,combo,multi);
+		closureData.npc.monsters[closureData.npc.current].hp-=damage;
+		if(closureData.npc.monsters[closureData.npc.current].hp<=0){
+			newTurn();
+			clearTimeout(selectTimeLimit);
+			var itemGet = [];
+			if(Math.random()<closureData.npc.monsters[closureData.npc.current].dropPercent){
+				var size = closureData.npc.monsters[closureData.npc.current].drop.length;
+
+				itemGet.push( closureData.npc.monsters[closureData.npc.current].drop[ Math.floor(Math.random()*size) ] );
+			}
+			alert("战斗胜利！");
+			callback(itemGet, window.gameData.map[denguonKey].exp);
+			return;
+		}
+
+		closureData.me.hp -= closureData.npc.monsters[closureData.npc.current].atk;
+		if(closureData.me.hp<=0){
+			newTurn();
+			clearTimeout(selectTimeLimit);
+			alert("你已经死了！");
+			callback(false);
+			return;
+		}
+
+		newTurn();
 	}
 
 	function newTurn(){
 		closureData.turn++;
+		closureData.breakTurn = 3;
 		closureData.runeSelect[closureData.turn] = [];
 
 		showScreen();
+		selectTimeLimit = setTimeout(beginAtk, 1000 * 10);
 	}
 
 	newTurn();

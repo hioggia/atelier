@@ -6,7 +6,8 @@
 			name: "安卡",
 			hp: 14000,
 			atk: 500,
-			drop: [1]
+			drop: [1],
+			dropPercent: 0.4
 		}
 
 	};
