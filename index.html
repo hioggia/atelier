@@ -1,23 +1,28 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<meta charset="utf-8" />
-<style>
-	body{background-color:rgb(201,201,201);}
-	canvas{background-color:rgb(255,255,255);}
-</style>
-<script src="core.js"></script>
-<script src="rule/main.js"></script>
-<script src="data/items.js"></script>
-<script src="data/runes.js"></script>
-<script src="data/map.js"></script>
-<script src="data/monsters.js"></script>
-<canvas id="stage" width="480" height="320"></canvas>
-<script>
-	if(hasData()){
-		loadGame();
-	}else{
-		createNewGame();
-	}
-
-	main();
-</script>
+<head>
+    <meta charset="utf-8">
+    <title>Atelier</title>
+    <meta name="viewport" content="width=800,user-scalable=no"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="full-screen" content="yes"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <style>
+        body, canvas, div {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            -khtml-user-select: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+    </style>
+    <script src="dummy_server/dummy_data.js"></script>
+</head>
+<body style="padding:0; margin: 0;">
+<div>
+    <canvas id="gameCanvas" width="480" height="320"></canvas>
+</div>
+<script src="cocos2d.js"></script>
+</body>
+</html>
