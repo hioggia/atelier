@@ -30,18 +30,17 @@
         COCOS2D_DEBUG:2, //0 to turn debug off, 1 for basic debug, and 2 for full debug
         box2d:false,
         chipmunk:false,
-        showFPS:false,
+        showFPS:true,
+        loadExtension:false,
+        loadPluginx:true,
         frameRate:60,
-        loadExtension:true,
-        renderMode:0,       //Choose of RenderMode: 0(default), 1(Canvas only), 2(WebGL only)
         tag:'gameCanvas', //the dom element to run cocos2d on
-        engineDir:'cocos2d/',
+        engineDir:'../../../../cocos2d/',
         //SingleEngineFile:'',
         appFiles:[
-            'bl/rpc.js',
-            'ui/main_ui.js',
-            'ui/map.js',
-            'ui/bag.js'
+            'src/resource.js',
+            'src/MySocialManager.js',
+            'src/myApp.js'//add your own files in order here
         ]
     };
 
@@ -59,6 +58,7 @@
         return;
     }
 
+
     window.addEventListener('DOMContentLoaded', function () {
         //first load engine file if specified
         var s = d.createElement('script');
@@ -74,11 +74,11 @@
         }
         /*********Delete this section if you have packed all files into one*******/
 
-            //s.src = 'Packed_Release_File.js'; //IMPORTANT: Un-comment this line if you have packed all files into one
+            //s.src = 'myTemplate.js'; //IMPORTANT: Un-comment this line if you have packed all files into one
 
+        d.body.appendChild(s);
         document.ccConfig = c;
         s.id = 'cocos2d-html5';
-        d.body.appendChild(s);
         //else if single file specified, load singlefile
     });
 })();

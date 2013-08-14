@@ -8,7 +8,6 @@ var homeLayer = cc.Layer.extend({
         return true;
     },
     renderUI: function(data){
-    	console.log('home rending');
         var size = cc.Director.getInstance().getWinSize();
 
         var nameLabel = cc.LabelTTF.create(data.name, 'sans-serif', 14);
@@ -61,16 +60,20 @@ function addMenu(layer){
 	var size = cc.Director.getInstance().getWinSize();
 
 	var homeLabel = cc.LabelTTF.create('家','sans-serif',20);
-	var homeItem = cc.MenuItemLabel.create(homeLabel, sceneChange('home'), layer);
+	var homeItem = cc.MenuItemLabel.create(homeLabel, sceneChange, layer);
+	homeItem.setUserData('home');
 
     var mapLabel = cc.LabelTTF.create('地图','sans-serif',20);
-    var mapItem = cc.MenuItemLabel.create(mapLabel, sceneChange('map'), layer);
+    var mapItem = cc.MenuItemLabel.create(mapLabel, sceneChange, layer);
+    mapItem.setUserData('map');
 
     var alchemistLabel = cc.LabelTTF.create('调合','sans-serif',20);
-    var alchemistItem = cc.MenuItemLabel.create(alchemistLabel, sceneChange('alchemist'), layer);
+    var alchemistItem = cc.MenuItemLabel.create(alchemistLabel, sceneChange, layer);
+    alchemistItem.setUserData('alchemist');
 
     var bagLabel = cc.LabelTTF.create('背包','sans-serif',20);
-    var bagItem = cc.MenuItemLabel.create(bagLabel, sceneChange('bag'), layer);
+    var bagItem = cc.MenuItemLabel.create(bagLabel, sceneChange, layer);
+    bagItem.setUserData('bag');
 
     var menu = cc.Menu.create();
     menu.setPosition(size.width-30, 0);
@@ -87,22 +90,24 @@ function addMenu(layer){
     layer.setTouchEnabled(true);
 }
 
-function sceneChange(sceneName){
+function sceneChange(sender){
+	var sceneName = sender.getUserData(),
+		scene = null;
 	switch(sceneName){
-		case 'home': return function(sender){
-			var scene = new mainScene();
-			cc.Director.getInstance().replaceScene(scene);
-		};
-		case 'map': return function(sender){
-			var scene = new mapScene();
-			cc.Director.getInstance().replaceScene(scene);
-		};
-		case 'alchemist': return function(sender){
-
-		};
-		case 'bag': return function(sender){
-
-		};
+		case 'home':
+			scene = new mainScene();
+			break;
+		case 'map':
+			scene = new mapScene();
+			break;
+		case 'alchemist':
+			break;
+		case 'bag':
+			scene = new bagScene();
+			break;
+	}
+	if(scene){
+		cc.Director.getInstance().replaceScene(scene);
 	}
 }
 

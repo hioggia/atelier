@@ -172,6 +172,10 @@
 		callback( copy(map) );
 	}
 
+	function getBagData(callback){
+		callback( copy(myData.items) );
+	}
+
 	function setMapEnterArea(key, callback){
 		if(map[key].stamina>myData.stamina){
 			callback({'error':{'msg':'耐力不足'}});
@@ -253,6 +257,7 @@
 			switch(key){
 				case 'home': return getMyData(callback);
 				case 'map_list': return getMapList(callback);
+				case 'bag': return getBagData(callback);
 			}
 
 		},
