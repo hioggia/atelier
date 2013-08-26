@@ -38,10 +38,18 @@
         engineDir:'cocos2d/',
         //SingleEngineFile:'',
         appFiles:[
-            'bl/rpc.js',
-            'ui/main_ui.js',
-            'ui/map.js',
-            'ui/bag.js'
+            'src/config.js',
+            'res/list.js',
+            'src/bl/rpc.js',
+            'src/bl/battle_logic.js',
+            'src/ui/base_ui.js',
+            'src/ui/parts/menu.js',
+            'src/ui/parts/gauge.js',
+            'src/ui/parts/rune_maker.js',
+            'src/ui/home.js',
+            'src/ui/map.js',
+            'src/ui/battle.js',
+            'src/ui/bag.js'
         ]
     };
 

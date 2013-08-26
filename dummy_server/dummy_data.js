@@ -1,38 +1,9 @@
 (function(){
 
 	var
+	version = 3,
 	myData,
-	items = {
-
-		"1": {
-			name: "普通石头",
-			type: "material",
-			price: 100,
-			rare: 1
-		},
-
-		"1001": {
-			name: "石头剑",
-			type: "weapon",
-			price: 1000,
-			rare: 1,
-			weapon: {
-				atk: 100
-			}
-		},
-
-		"2001": {
-			name: "石头衣服",
-			type: "equipment",
-			price: 1000,
-			rare: 1,
-			equipment: {
-				hp: 10000,
-				skill: []
-			}
-		}
-
-	},
+	items,
 	map = {
 
 		"1001": {
@@ -45,8 +16,50 @@
 		"1002": {
 			name: "奥杜尔",
 			stamina: 2,
-			monster: [1,1,1,1],
-			exp: 500
+			monster: [1,1],
+			exp: 210
+		},
+
+		"1003": {
+			name: "冬拥湖",
+			stamina: 3,
+			monster: [1,2],
+			exp: 320
+		},
+
+		"1004": {
+			name: "东京热",
+			stamina: 4,
+			monster: [2,2],
+			exp: 430
+		},
+
+		"1005": {
+			name: "东京热 第二部",
+			stamina: 6,
+			monster: [2,3],
+			exp: 640
+		},
+
+		"1006": {
+			name: "东京热 大结局",
+			stamina: 7,
+			monster: [2,2,4],
+			exp: 750
+		},
+
+		"1007": {
+			name: "百鬼夜行",
+			stamina: 7,
+			monster: [2,4,5],
+			exp: 800
+		},
+
+		"1008": {
+			name: "百万鬼夜行",
+			stamina: 10,
+			monster: [1,2,3,4,5],
+			exp: 1110
 		}
 
 	},
@@ -56,8 +69,40 @@
 			name: "安卡",
 			hp: 14000,
 			atk: 500,
-			drop: [1],
+			drop: [1,3],
 			dropPercent: 0.4
+		},
+
+		"2": {
+			name: "安倍",
+			hp: 34000,
+			atk: 800,
+			drop: [1,2,3,4],
+			dropPercent: 0.4
+		},
+
+		"3": {
+			name: "早安少女",
+			hp: 64000,
+			atk: 1000,
+			drop: [2,6],
+			dropPercent: 0.6
+		},
+
+		"4": {
+			name: "有超能力的魔法师",
+			hp: 20000,
+			atk: 1500,
+			drop: [3,4,5],
+			dropPercent: 0.8
+		},
+
+		"5": {
+			name: "妖狐玉藻前",
+			hp: 50000,
+			atk: 1980,
+			drop: [2,6,7],
+			dropPercent: 0.8
 		}
 
 	},
@@ -67,6 +112,14 @@
 			return level*300+200;
 		}
 	};
+
+	(function getItemData(){
+		if('itemDefine' in window){
+			items = copy(itemDefine);
+		}else{
+			setTimeout(getItemData,100);
+		}
+	})();
 
 	function copy(object){
 		var copied = {};
@@ -109,7 +162,7 @@
 	function createNewGame(){
 
 		myData = {
-			version: 2,
+			version: version,
 			name: "体验版玩家",
 			stamina: 10,
 			staminaMax: 10,
@@ -117,11 +170,12 @@
 			level: 1,
 			exp: 0,
 			upgradeExp: 0,
-			items: [1001,1001,1001,2001],
+			items: [1001,1001,1001,1001,2001],
 			weapon: {
 				"1": 1001,
 				"2": 1001,
-				"3": 1001
+				"3": 1001,
+				"4": 1001
 			},
 			equipment: 2001,
 			runePackages: 4
@@ -134,7 +188,7 @@
 
 	function loadGame(){
 		myData = JSON.parse( window.localStorage['my_save'] );
-		if(myData.version != 2){
+		if(myData.version != version){
 			createNewGame();
 		}
 		if(myData.stamina != myData.staminaMax){
@@ -192,6 +246,7 @@
 				myAtk1: items[myData.weapon["1"]].weapon.atk,
 				myAtk2: items[myData.weapon["2"]].weapon.atk,
 				myAtk3: items[myData.weapon["3"]].weapon.atk,
+				myAtk4: items[myData.weapon["4"]].weapon.atk,
 				myRunes: [],
 				monUnits: []
 			};

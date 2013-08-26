@@ -1,4 +1,4 @@
-var homeLayer = cc.Layer.extend({
+var homeLayer = BaseUILayer.extend({
 
     init:function () {
         this._super();
@@ -10,8 +10,8 @@ var homeLayer = cc.Layer.extend({
     renderUI: function(data){
         var size = cc.Director.getInstance().getWinSize();
 
-        var nameLabel = cc.LabelTTF.create(data.name, 'sans-serif', 14);
-        nameLabel.setPosition(50, size.height - 15);
+        var nameLabel = cc.LabelTTF.create(data.name, 'sans-serif', 14, cc.size(140,14), cc.TEXT_ALIGNMENT_LEFT);
+        nameLabel.setPosition(10 + 70, size.height - 15);
         this.addChild(nameLabel, 1);
 
         var lvLabel = cc.LabelTTF.create('Lv.' + data.level, 'sans-serif', 14);
@@ -51,65 +51,12 @@ var homeLayer = cc.Layer.extend({
         staminaLabel.setPosition( 100, size.height - 52);
         this.addChild(staminaLabel, 1);
 
-        addMenu(this);
+        var mMenu = new menuLayer();
+        mMenu.setPosition(size.width-30, 0);
+        this.addChild(mMenu);
     }
 
 });
-
-function addMenu(layer){
-	var size = cc.Director.getInstance().getWinSize();
-
-	var homeLabel = cc.LabelTTF.create('家','sans-serif',20);
-	var homeItem = cc.MenuItemLabel.create(homeLabel, sceneChange, layer);
-	homeItem.setUserData('home');
-
-    var mapLabel = cc.LabelTTF.create('地图','sans-serif',20);
-    var mapItem = cc.MenuItemLabel.create(mapLabel, sceneChange, layer);
-    mapItem.setUserData('map');
-
-    var alchemistLabel = cc.LabelTTF.create('调合','sans-serif',20);
-    var alchemistItem = cc.MenuItemLabel.create(alchemistLabel, sceneChange, layer);
-    alchemistItem.setUserData('alchemist');
-
-    var bagLabel = cc.LabelTTF.create('背包','sans-serif',20);
-    var bagItem = cc.MenuItemLabel.create(bagLabel, sceneChange, layer);
-    bagItem.setUserData('bag');
-
-    var menu = cc.Menu.create();
-    menu.setPosition(size.width-30, 0);
-    menu.addChild(homeItem);
-    homeItem.setPosition(0, size.height-20);
-    menu.addChild(mapItem);
-    mapItem.setPosition(0, size.height-60);
-    menu.addChild(alchemistItem);
-    alchemistItem.setPosition(0, size.height-100);
-    menu.addChild(bagItem);
-    bagItem.setPosition(0, size.height-140);
-
-    layer.addChild(menu, 1);
-    layer.setTouchEnabled(true);
-}
-
-function sceneChange(sender){
-	var sceneName = sender.getUserData(),
-		scene = null;
-	switch(sceneName){
-		case 'home':
-			scene = new mainScene();
-			break;
-		case 'map':
-			scene = new mapScene();
-			break;
-		case 'alchemist':
-			break;
-		case 'bag':
-			scene = new bagScene();
-			break;
-	}
-	if(scene){
-		cc.Director.getInstance().replaceScene(scene);
-	}
-}
 
 var mainScene = cc.Scene.extend({
 	onEnter: function(){

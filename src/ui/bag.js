@@ -1,4 +1,4 @@
-var bagLayer = cc.Layer.extend({
+var bagLayer = BaseUILayer.extend({
 
 	init: function () {
         this._super();
@@ -22,7 +22,9 @@ var bagLayer = cc.Layer.extend({
 			scrollView.addChild(mapNameLabel, 1);
 		}
 
-        addMenu(this);
+        var mMenu = new menuLayer();
+        mMenu.setPosition(size.width-30, 0);
+        this.addChild(mMenu);
     }
 	
 });
