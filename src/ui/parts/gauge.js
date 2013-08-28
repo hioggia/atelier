@@ -7,14 +7,16 @@ var Gauge = cc.Layer.extend({
 	_maxValue: 0,
 	_nowValue: 0,
 	_prefixText: '',
+	_extendText: '',
 	_fontSize: 10,
 
-	init: function(colorFore, defaultValue, maxValue, prefixText){
+	init: function(colorFore, defaultValue, maxValue, prefixText, extendText){
 		this._super();
 
 		this._maxValue = maxValue;
 		this._nowValue = defaultValue;
-		this._prefixText = prefixText;
+		this._prefixText = prefixText || '';
+		this._extendText = extendText || '';
 
 		this.bar = cc.LayerColor.create( cc.c4b(40,40,40,255), 200, 5 );
 		this.bar.setPosition(0, 0);
@@ -30,8 +32,8 @@ var Gauge = cc.Layer.extend({
 		this.gauge.setPosition(100,2.5);
 		this.addChild(this.gauge, 1);
 
-		this.label = cc.LabelTTF.create( this._prefixText + this._nowValue + '/' + this._maxValue, 'Vernada', this._fontSize, cc.size(200, 5) );
-		this.label.setPosition(100, 2.5);
+		this.label = cc.LabelTTF.create( this._prefixText + this._nowValue + '/' + this._maxValue + this._extendText, 'Vernada', this._fontSize, cc.size(200, 5) );
+		this.label.setPosition(100, 8);
 		this.addChild(this.label, 1);
 
 		return true;
@@ -46,9 +48,9 @@ var Gauge = cc.Layer.extend({
 
 });
 
-Gauge.create = function(colorFore, defaultValue, maxValue, prefixText){
+Gauge.create = function(colorFore, defaultValue, maxValue, prefixText, extendText){
 	var gauge = new Gauge();
-	gauge.init(colorFore, defaultValue, maxValue, prefixText);
+	gauge.init(colorFore, defaultValue, maxValue, prefixText, extendText);
 
 	return gauge;
 }

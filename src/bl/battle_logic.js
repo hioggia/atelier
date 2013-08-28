@@ -30,7 +30,7 @@ battleLogic.prototype = {
 
 		var result = {
 			combo: [0,0,0,0],
-			multi: [0.5,1,1.5,2],
+			multi: [0.8,1,1.4,2],
 			prefect: false
 		}, runes = this.turnRunes[this.turn];
 
@@ -55,7 +55,7 @@ battleLogic.prototype = {
 				if(runeDefine[arr[0]].ten == runeDefine[arr[1]].ten && runeDefine[arr[0]].ten == runeDefine[arr[2]].ten){
 					if(arr[0] == arr[1] && arr[0] == arr[2]){
 						result.multi[index] *= 2;
-					}else if(arr[0]+1 == arr[1] && arr[0]+2 == arr[2]){
+					}else if(runeDefine[arr[0]].ten < 4 && arr[0]+1 == arr[1] && arr[0]+2 == arr[2]){
 						result.multi[index] *= 1.5;
 					}
 				}
@@ -110,7 +110,7 @@ battleLogic.prototype = {
 			if(runeDefine[arr[0]].ten == runeDefine[arr[1]].ten && runeDefine[arr[0]].ten == runeDefine[arr[2]].ten){
 				if(arr[0] == arr[1] && arr[0] == arr[2]){
 					return 1;
-				}else if(arr[0]+1 == arr[1] && arr[0]+2 == arr[2]){
+				}else if(runeDefine[arr[0]].ten < 4 && arr[0]+1 == arr[1] && arr[0]+2 == arr[2]){
 					return 1;
 				}
 			}

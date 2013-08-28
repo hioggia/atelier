@@ -16,6 +16,8 @@ var areaLayer = BaseUILayer.extend({
 
 	battleBL: null,
 
+	handRunes: 14,
+
 	//ui
 	dungeonBattles: null,
 	monsterName: null,
@@ -66,7 +68,7 @@ var areaLayer = BaseUILayer.extend({
     	this.addChild(this.monsterHpGauge, 1);
 
     	this.runeOperator = cc.Menu.create();
-		this.runeOperator.setPosition(10, 50);
+		this.runeOperator.setPosition(10, 10);
 		this.addChild(this.runeOperator, 1);
 
 		this.runeActived = cc.Layer.create();
@@ -86,23 +88,25 @@ var areaLayer = BaseUILayer.extend({
     refreshRune: function(){
     	var _self = this;
     	this.runeOperator.removeAllChildren();
-    	for(var i=0,len=Math.min(9, this.myRunes.length);i<len;i++){
+    	for(var i=0,len=Math.min(this.handRunes, this.myRunes.length);i<len;i++){
     		var runesImage = cc.MenuItemSprite.create( runeMaker(this.myRunes[i]), runeMaker(this.myRunes[i]), null, this.selectRune.bind(this));
-    		if(this.battleBL.isInSelect(i)){
-    			runesImage.setRotation(12);
-    		}
     		runesImage.setUserData(i);
-    		runesImage.setPosition( i%9*50+25, Math.floor(i/9)*60 );
+    		runesImage.setAnchorPoint(cc.p(0,0));
+    		runesImage.setPosition( i%this.handRunes*33, Math.floor(i/this.handRunes)*50 );
+    		if(this.battleBL.isInSelect(i)){
+    			runesImage.setPosition(cc.p(runesImage.getPositionX(), runesImage.getPositionY()+10));
+    		}
     		this.runeOperator.addChild(runesImage);
 		}
     },
     fillRune: function(){
     	var _self = this;
     	this.runeOperator.removeAllChildren();
-    	for(var i=0,len=Math.min(9, this.myRunes.length);i<len;i++){
+    	for(var i=0,len=Math.min(this.handRunes, this.myRunes.length);i<len;i++){
     		var runesImage = cc.MenuItemSprite.create( runeMaker(this.myRunes[i]), runeMaker(this.myRunes[i]), null, this.selectRune.bind(this));
     		runesImage.setUserData(i);
-    		runesImage.setPosition( i%9*50+25, Math.floor(i/9)*60 );
+    		runesImage.setAnchorPoint(cc.p(0,0));
+    		runesImage.setPosition( i%this.handRunes*33, Math.floor(i/this.handRunes)*50 );
     		this.runeOperator.addChild(runesImage);
 		}
 		this.battleBL.newPart();

@@ -138,6 +138,41 @@ var runeDefine = {
         name: "九万",
         ten: 3,
         one: 9
+    },
+    "41": {
+        name: "东",
+        ten: 4,
+        one: 1
+    },
+    "42": {
+        name: "南",
+        ten: 4,
+        one: 2
+    },
+    "43": {
+        name: "西",
+        ten: 4,
+        one: 3
+    },
+    "44": {
+        name: "北",
+        ten: 4,
+        one: 4
+    },
+    "45": {
+        name: "白",
+        ten: 4,
+        one: 5
+    },
+    "46": {
+        name: "发",
+        ten: 4,
+        one: 6
+    },
+    "47": {
+        name: "中",
+        ten: 4,
+        one: 7
     }
 };
 

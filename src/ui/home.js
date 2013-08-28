@@ -22,18 +22,15 @@ var homeLayer = BaseUILayer.extend({
         currentExpBar.setPosition(10, size.height - 43);
         this.addChild(currentExpBar, 1);
 
-    	var currentStaminaBar = Gauge.create( 1, data.stamina, data.staminaMax, '耐力： ' );
-    	currentStaminaBar.setPosition(10, size.height - 60);
-    	this.addChild(currentStaminaBar, 1);
-
-        var staminaText = '';
+        var staminaExtText = '';
         if(data.stamina != data.staminaMax){
         	var chargeFullTime = new Date( (data.staminaMax-data.stamina)*rule.staminaRecoveryPerMS+data.recoveryStaminaBegin );
-        	staminaText += " (" + (chargeFullTime.getDate()==new Date().getDate()?"今日":"明日") + chargeFullTime.getHours() + ":" + chargeFullTime.getMinutes() + " 回满)";
+        	staminaExtText += " (" + (chargeFullTime.getDate()==new Date().getDate()?"今日":"明日") + chargeFullTime.getHours() + ":" + chargeFullTime.getMinutes() + " 回满)";
         }
-        var staminaLabel = cc.LabelTTF.create(staminaText, 'sans-serif', 9);
-        staminaLabel.setPosition( 100, size.height - 52);
-        this.addChild(staminaLabel, 1);
+
+    	var currentStaminaBar = Gauge.create( 1, data.stamina, data.staminaMax, '耐力： ', staminaExtText );
+    	currentStaminaBar.setPosition(10, size.height - 60);
+    	this.addChild(currentStaminaBar, 1);
 
         var mMenu = new menuLayer();
         mMenu.setPosition(size.width-30, 0);
