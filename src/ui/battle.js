@@ -61,7 +61,7 @@ var areaLayer = BaseUILayer.extend({
     	this.monsterName.setPosition(50, size.height - 15);
     	this.addChild(this.monsterName, 1);
 
-    	this.monsterHpGauge = Gauge.create( 200, 5, cc.c4b(40,40,40,255), cc.c4b(127,0,0,127), this.monUnits[0].hp, this.monUnits[0].maxHp, '', 10 );
+    	this.monsterHpGauge = Gauge.create( 0, this.monUnits[0].hp, this.monUnits[0].maxHp, '' );
     	this.monsterHpGauge.setPosition(110, size.height - 23);
     	this.addChild(this.monsterHpGauge, 1);
 
@@ -73,7 +73,7 @@ var areaLayer = BaseUILayer.extend({
 		this.runeActived.setPosition(10, 180);
 		this.addChild(this.runeActived, 1);
 
-    	this.myHpGauge = Gauge.create( 200, 5, cc.c4b(40,40,40,255), cc.c4b(127,0,0,127), this.myHp, this.myMaxHp, '', 10 );
+    	this.myHpGauge = Gauge.create( 0, this.myHp, this.myMaxHp, '' );
     	this.myHpGauge.setPosition( size.width - 210, 150 );
     	this.addChild(this.myHpGauge, 1);
 
@@ -106,6 +106,9 @@ var areaLayer = BaseUILayer.extend({
     		this.runeOperator.addChild(runesImage);
 		}
 		this.battleBL.newPart();
+		if(!this.battleBL.checkCanPlayable(this.myRunes.length)){
+			this.endTurn();
+		}
     },
     showActiveRune: function(){
     	this.runeActived.removeAllChildren();

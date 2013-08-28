@@ -16,6 +16,13 @@ battleLogic.prototype = {
 		this.partRunes = {};
 		this.partRunesLength = 0;
 	},
+	checkCanPlayable: function(leastRunes){
+		if(this.turnRunes[this.turn].length==12){
+			return leastRunes>=2;
+		}else{
+			return leastRunes>=3;
+		}
+	},
 	getTurnSelect: function(){
 		return this.turnRunes[this.turn];
 	},
@@ -26,6 +33,10 @@ battleLogic.prototype = {
 			multi: [0.5,1,1.5,2],
 			prefect: false
 		}, runes = this.turnRunes[this.turn];
+
+		if(runes.length == 0){
+			return result;
+		}
 
 		//普通胡牌
 		for(var i=0,len=runes.length;i<len;i+=3){
