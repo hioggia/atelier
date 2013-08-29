@@ -88,13 +88,13 @@ var areaLayer = BaseUILayer.extend({
     refreshRune: function(){
     	var _self = this;
     	this.runeOperator.removeAllChildren();
-    	for(var i=0,len=Math.min(this.handRunes, this.myRunes.length);i<len;i++){
-    		var runesImage = cc.MenuItemSprite.create( runeMaker(this.myRunes[i]), runeMaker(this.myRunes[i]), null, this.selectRune.bind(this));
+    	for(var i=0,len=Math.min(this.handRunes, this.myRunes[0].length);i<len;i++){
+    		var runesImage = cc.MenuItemSprite.create( runeMaker(this.myRunes[0][i]), runeMaker(this.myRunes[0][i]), null, this.selectRune.bind(this));
     		runesImage.setUserData(i);
     		runesImage.setAnchorPoint(cc.p(0,0));
     		runesImage.setPosition( i%this.handRunes*33, Math.floor(i/this.handRunes)*50 );
     		if(this.battleBL.isInSelect(i)){
-    			runesImage.setPosition(cc.p(runesImage.getPositionX(), runesImage.getPositionY()+10));
+    			runesImage.setPosition(cc.p(runesImage.getPositionX(), runesImage.getPositionY()+5));
     		}
     		this.runeOperator.addChild(runesImage);
 		}
@@ -102,15 +102,15 @@ var areaLayer = BaseUILayer.extend({
     fillRune: function(){
     	var _self = this;
     	this.runeOperator.removeAllChildren();
-    	for(var i=0,len=Math.min(this.handRunes, this.myRunes.length);i<len;i++){
-    		var runesImage = cc.MenuItemSprite.create( runeMaker(this.myRunes[i]), runeMaker(this.myRunes[i]), null, this.selectRune.bind(this));
+    	for(var i=0,len=Math.min(this.handRunes, this.myRunes[0].length);i<len;i++){
+    		var runesImage = cc.MenuItemSprite.create( runeMaker(this.myRunes[0][i]), runeMaker(this.myRunes[0][i]), null, this.selectRune.bind(this));
     		runesImage.setUserData(i);
     		runesImage.setAnchorPoint(cc.p(0,0));
     		runesImage.setPosition( i%this.handRunes*33, Math.floor(i/this.handRunes)*50 );
     		this.runeOperator.addChild(runesImage);
 		}
 		this.battleBL.newPart();
-		if(!this.battleBL.checkCanPlayable(this.myRunes.length)){
+		if(!this.battleBL.checkCanPlayable(this.myRunes[0].length)){
 			this.endTurn();
 		}
     },
@@ -125,14 +125,14 @@ var areaLayer = BaseUILayer.extend({
     },
     selectRune: function(sender){
     	var index = sender.getUserData();
-    	var nowSelect = this.myRunes[index];
+    	var nowSelect = this.myRunes[0][index];
     	var selectResult = this.battleBL.select(index, nowSelect);
 		if(selectResult == 1){
 			//可继续出牌
 			this.battleBL.runeConfirmed();
 			var partSelect = this.battleBL.getPartSelectIndex();
 			for(var i=0,len=partSelect.length;i<len;i++){
-				this.myRunes.splice(partSelect[i], 1);
+				this.myRunes[0].splice(partSelect[i], 1);
 			}
 			this.fillRune();
 		}else if(selectResult == 2){
@@ -140,10 +140,10 @@ var areaLayer = BaseUILayer.extend({
 			this.battleBL.runeConfirmed();
 			var partSelect = this.battleBL.getPartSelectIndex();
 			for(var i=0,len=partSelect.length;i<len;i++){
-				this.myRunes.splice(partSelect[i], 1);
+				this.myRunes[0].splice(partSelect[i], 1);
 			}
 			this.endTurn();
-		}else if(this.myRunes.length == 0){
+		}else if(this.myRunes[0].length == 0){
 			this.endTurn();
 		}else{
 			this.refreshRune();
@@ -183,16 +183,15 @@ var areaLayer = BaseUILayer.extend({
 			}
 			this.monUnits.shift();
 			this.dungeonBattles.setString( this.monUnitMax-this.monUnits.length +'/'+ this.monUnitMax );
+			this.myRunes.shift();
 
 			if(this.monUnits.length == 0){
 				this.showMessage('战斗胜利！');
 				setData('map_area_clear','','',liveDungeon);
 			}else{
 				this.monsterName.setString( this.monUnits[0].name );
-				this.monsterHp.setString( this.monUnits[0].hp +'/'+ this.monUnits[0].maxHp );
-				var monsterHpAction = cc.ProgressTo.create(1, this.monUnits[0].hp/this.monUnits[0].maxHp);
-				//this.monsterHpBar.changeWidth( Math.max(1, this.monUnits[0].hp/this.monUnits[0].maxHp*200 ) );
-				this.monsterHpBar.runAction(monsterHpAction);
+				this.monsterHpGauge.changeValue(this.monUnits[0].hp, this.monUnits[0].maxHp);
+				
 				this.newTurn();
 			}
 
@@ -223,7 +222,7 @@ var areaLayer = BaseUILayer.extend({
 		}
 
 		this.newTurn();
-		if(this.myRunes.length==0){
+		if(this.myRunes[0].length==0){
 			this.endTurn();
 		}
     },
@@ -237,6 +236,7 @@ var areaLayer = BaseUILayer.extend({
 		this.myHpBar = null;
 		this.runeOperator = null;
 		this.runeActived = null;
+		this.battleBL = null;
 
     	this._super();
     }

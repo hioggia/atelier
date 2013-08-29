@@ -253,13 +253,6 @@
 
 			var clearBouns = {items:[],exp:map[key].exp};
 
-			for(var i=0,len=myData.runePackages;i<len;i++){
-				for(var k=0,max=runes.length;k<max;k++){
-					closureData.myRunes.push(runes[k]);
-				}
-			}
-			shuffle(closureData.myRunes);
-
 			for(var i=0,len=map[key].monster.length;i<len;i++){
 				var id = map[key].monster[i],
 				mon = {
@@ -275,11 +268,23 @@
 					mon.drop = drop;
 				}
 				closureData.monUnits.push(mon);
+				closureData.myRunes.push(makeRunes());
 			}
 
 			window.localStorage['dungeon_clear'] = JSON.stringify(clearBouns);
 
 			callback(closureData);
+
+			function makeRunes(){
+				var tempRune = [];
+				for(var i=0,len=myData.runePackages;i<len;i++){
+					for(var k=0,max=runes.length;k<max;k++){
+						tempRune.push(runes[k]);
+					}
+				}
+				shuffle(tempRune);
+				return tempRune;
+			}
 		}
 	}
 

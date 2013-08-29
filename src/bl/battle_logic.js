@@ -77,9 +77,15 @@ battleLogic.prototype = {
 	getPartSelectIndex: function(){
 		var arr = [];
 		for(var key in this.partRunes){
+			for(var i=0;i<arr.length;i++){
+				if(arr[i]<~~key){
+					var temp = ~~key;
+					key = arr[i];
+					arr[i] = temp;
+				}
+			}
 			arr.push(~~key);
 		}
-		arr.sort().reverse();
 		return arr;
 	},
 	isInSelect: function(index){
