@@ -11,10 +11,10 @@ var mapLayer = BaseUILayer.extend({
         var size = cc.Director.getInstance().getWinSize();
 
         var index = -1,
-    		container = cc.LayerColor.create( new cc.Color4B(0,0,0,255), 420, 320 ),
+    		container = cc.LayerColor.create( cc.c4b(0,0,0,255), 420, 320 ),
         	menu = cc.Menu.create(),
         	scrollView;
-        scrollView = cc.ScrollView.create( new cc.Size(420, 320), container );
+        scrollView = cc.ScrollView.create( cc.size(420, 320), container );
         scrollView.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
 		this.addChild(scrollView, 1);
         scrollView.addChild(menu, 1);
@@ -22,7 +22,7 @@ var mapLayer = BaseUILayer.extend({
 		for(var key in data){
 			index++;
 			var mapNameLabel = cc.LabelTTF.create(data[key].name, 'sans-serif', 14);
-			mapNameLabel.setColor( new cc.Color3B(100,100,255) );
+			mapNameLabel.setColor( cc.c3b(100,100,255) );
 			var mapNameItem = cc.MenuItemLabel.create(mapNameLabel, this.jumpAreaScene, this);
 			mapNameItem.setUserData(key);
 			menu.addChild(mapNameItem);

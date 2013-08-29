@@ -49,6 +49,7 @@ var menuLayer = cc.Layer.extend({
 				scene = new mapScene();
 				break;
 			case 'alchemist':
+				scene = new alchemistScene();
 				break;
 			case 'bag':
 				scene = new bagScene();

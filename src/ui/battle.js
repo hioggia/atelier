@@ -89,7 +89,7 @@ var areaLayer = BaseUILayer.extend({
     	var _self = this;
     	this.runeOperator.removeAllChildren();
     	for(var i=0,len=Math.min(this.handRunes, this.myRunes[0].length);i<len;i++){
-    		var runesImage = cc.MenuItemSprite.create( runeMaker(this.myRunes[0][i]), runeMaker(this.myRunes[0][i]), null, this.selectRune.bind(this));
+    		var runesImage = cc.MenuItemSprite.create( runeMaker(this.myRunes[0][i]), null, null, this.selectRune, this);
     		runesImage.setUserData(i);
     		runesImage.setAnchorPoint(cc.p(0,0));
     		runesImage.setPosition( i%this.handRunes*33, Math.floor(i/this.handRunes)*50 );
@@ -103,7 +103,7 @@ var areaLayer = BaseUILayer.extend({
     	var _self = this;
     	this.runeOperator.removeAllChildren();
     	for(var i=0,len=Math.min(this.handRunes, this.myRunes[0].length);i<len;i++){
-    		var runesImage = cc.MenuItemSprite.create( runeMaker(this.myRunes[0][i]), runeMaker(this.myRunes[0][i]), null, this.selectRune.bind(this));
+    		var runesImage = cc.MenuItemSprite.create( runeMaker(this.myRunes[0][i]), null, null, this.selectRune, this);
     		runesImage.setUserData(i);
     		runesImage.setAnchorPoint(cc.p(0,0));
     		runesImage.setPosition( i%this.handRunes*33, Math.floor(i/this.handRunes)*50 );

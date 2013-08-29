@@ -49,7 +49,8 @@
             'src/ui/home.js',
             'src/ui/map.js',
             'src/ui/battle.js',
-            'src/ui/bag.js'
+            'src/ui/bag.js',
+            'src/ui/alchemist.js'
         ]
     };
 

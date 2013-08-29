@@ -311,6 +311,26 @@
 		}
 	}
 
+	function setAlchemistBuild(key, callback){
+		var material = alchemistDefine[key];
+        for(var k=0,klen=material.length;k<klen;k++){
+        	for(var i=0,len=myData.items.length;i<=len;i++){
+        		if(i==len){
+        			callback({'error':{'msg':'素材不足'}});
+        			return;
+        		}
+        		console.log(i,myData.items[i],material[k]);
+        		if(myData.items[i] == material[k]){
+        			myData.items.splice(i, 1);
+        			break;
+        		}
+        	}
+        }
+        myData.items.push(key);
+		saveGame();
+        callback( copy(myData.items) );
+	}
+
 	window.dummyData = {
 		get: function(key, params, callback){
 
@@ -326,6 +346,7 @@
 			switch(key){
 				case 'map_enter_area': return setMapEnterArea(params, callback);
 				case 'map_area_clear': return setMapAreaClear(callback);
+				case 'alchemist_build': return setAlchemistBuild(data, callback);
 			}
 
 		}

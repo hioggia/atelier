@@ -275,7 +275,7 @@ var itemDefine = {
     },
 
     "1005": {
-        name: "妖气剑",
+        name: "登龙剑",
         type: "weapon",
         price: 3200,
         rare: 3,
@@ -285,7 +285,7 @@ var itemDefine = {
     },
 
     "1006": {
-        name: "黄金胜利之剑",
+        name: "誓约胜利之剑",
         type: "weapon",
         price: 12000,
         rare: 3,
@@ -295,7 +295,7 @@ var itemDefine = {
     },
 
     "1007": {
-        name: "唐吉诃德伯纳的佩剑",
+        name: "天之尾羽张",
         type: "weapon",
         price: 4200,
         rare: 4,
@@ -315,4 +315,14 @@ var itemDefine = {
         }
     }
 
+};
+
+var alchemistDefine = {
+    '1001': [1,1,1],
+    '1002': [1001,1,3],
+    '1003': [2,2,2],
+    '1004': [1003,2,4],
+    '1005': [1002,3,4,6],
+    '1006': [1004,5,6,7],
+    '1007': [1006,1006,8]
 };
