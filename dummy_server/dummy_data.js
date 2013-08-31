@@ -1,7 +1,7 @@
 (function(){
 
 	var
-	version = 3,
+	version = 4,
 	myData,
 	items,
 	map = {
@@ -170,7 +170,7 @@
 			level: 1,
 			exp: 0,
 			upgradeExp: 0,
-			items: [1001,1001,1001,1001,2001],
+			items: [],
 			weapon: {
 				"1": 1001,
 				"2": 1001,
@@ -212,27 +212,79 @@
 		window.localStorage['my_save'] = JSON.stringify(myData);
 	}
 
-	function getMyData(callback){
+	function getMyData(callback, target){
 		if(hasData()){
 			loadGame();
-			callback(myData);
+			if(target){
+				callback.call(target, myData);
+			}else{
+				callback(myData);
+			}
 		}else{
 			createNewGame();
-			callback(myData);
+			if(target){
+				callback.call(target, myData);
+			}else{
+				callback(myData);
+			}
 		}
 	}
 
-	function getMapList(callback){
-		callback( copy(map) );
+	function getMapList(callback, target){
+		if(target){
+			callback.call(target, copy(map));
+		}else{
+			callback( copy(map) );
+		}
 	}
 
-	function getBagData(callback){
-		callback( copy(myData.items) );
+	function getBagData(callback, target){
+		if(target){
+			callback.call(target, copy(myData.items));
+		}else{
+			callback( copy(myData.items) );
+		}
 	}
 
-	function setMapEnterArea(key, callback){
+	function getEquipData(callback, target){
+		var equipData = {
+			e: {
+				weapon: {
+					"1": myData.weapon["1"],
+					"2": myData.weapon["2"],
+					"3": myData.weapon["3"],
+					"4": myData.weapon["4"]
+				},
+				equipment: myData.equipment
+			},
+			b: {
+				weapon: [],
+				equipment: []
+			}
+		};
+		for(var i=0,len=myData.items.length;i<len;i++){
+			var curr = myData.items[i];
+			if(itemDefine[curr].type == 'weapon'){
+				equipData.b.weapon.push(curr);
+			}
+			if(itemDefine[curr].type == 'equipment'){
+				equipData.b.equipment.push(curr);
+			}
+		}
+		if(target){
+			callback.call(target, equipData);
+		}else{
+			callback( equipData );
+		}
+	}
+
+	function setMapEnterArea(key, callback, target){
 		if(map[key].stamina>myData.stamina){
-			callback({'error':{'msg':'耐力不足'}});
+			if(target){
+				callback.call(target,{'error':{'msg':'耐力不足'}});
+			}else{
+				callback({'error':{'msg':'耐力不足'}});
+			}
 		}else{
 			myData.stamina-=map[key].stamina;
 			if(myData.recoveryStaminaBegin == 0){
@@ -273,7 +325,11 @@
 
 			window.localStorage['dungeon_clear'] = JSON.stringify(clearBouns);
 
-			callback(closureData);
+			if(target){
+				callback.call(target, closureData);
+			}else{
+				callback(closureData);
+			}
 
 			function makeRunes(){
 				var tempRune = [];
@@ -288,7 +344,7 @@
 		}
 	}
 
-	function setMapAreaClear(callback){
+	function setMapAreaClear(callback, target){
 		if(window.localStorage['dungeon_clear']){
 			var clearBouns = JSON.parse(window.localStorage['dungeon_clear']);
 			for(var i=0,len=clearBouns.items.length;i<len;i++){
@@ -305,21 +361,32 @@
 				myData.recoveryStaminaBegin = 0;
 			}
 			saveGame();
-			callback(clearBouns);
+			if(target){
+				callback.call(target, clearBouns);
+			}else{
+				callback(clearBouns);
+			}
 		}else{
-			callback();
+			if(target){
+				callback.call(target);
+			}else{
+				callback();
+			}
 		}
 	}
 
-	function setAlchemistBuild(key, callback){
+	function setAlchemistBuild(key, callback, target){
 		var material = alchemistDefine[key];
         for(var k=0,klen=material.length;k<klen;k++){
         	for(var i=0,len=myData.items.length;i<=len;i++){
         		if(i==len){
-        			callback({'error':{'msg':'素材不足'}});
+					if(target){
+						callback.call(target,{'error':{'msg':'素材不足'}});
+					}else{
+						callback({'error':{'msg':'素材不足'}});
+					}
         			return;
         		}
-        		console.log(i,myData.items[i],material[k]);
         		if(myData.items[i] == material[k]){
         			myData.items.splice(i, 1);
         			break;
@@ -328,25 +395,65 @@
         }
         myData.items.push(key);
 		saveGame();
-        callback( copy(myData.items) );
+		if(target){
+			callback.call(target, copy(myData.items));
+		}else{
+			callback(copy(myData.items));
+		}
+	}
+
+	function setEquipData(params, data, callback, target){
+		checkOwnItem = false;
+		for(var i=0,len=myData.items.length;i<len;i++){
+			if(myData.items[i] == data){
+				checkOwnItem = true;
+				myData.items.splice(i,1);
+				break;
+			}
+		}
+		if(!checkOwnItem){
+			if(target){
+				callback.call(target,{'error':{'msg':'你没有此道具'}});
+			}else{
+				callback({'error':{'msg':'你没有此道具'}});
+			}
+			return;
+		}
+
+		if(params == 0){
+			myData.items.push( myData.equipment );
+			myData.equipment = data;
+		}else if(params < 5){
+			myData.items.push( myData.weapon[params] );
+			myData.weapon[params] = data;
+		}
+		saveGame();
+
+		if(target){
+			callback.call(target);
+		}else{
+			callback();
+		}
 	}
 
 	window.dummyData = {
-		get: function(key, params, callback){
+		get: function(key, params, callback, target){
 
 			switch(key){
-				case 'home': return getMyData(callback);
-				case 'map_list': return getMapList(callback);
-				case 'bag': return getBagData(callback);
+				case 'home': return getMyData(callback, target);
+				case 'map_list': return getMapList(callback, target);
+				case 'bag': return getBagData(callback, target);
+				case 'equip': return getEquipData(callback, target);
 			}
 
 		},
-		set: function(key, params, data, callback){
+		set: function(key, params, data, callback, target){
 
 			switch(key){
-				case 'map_enter_area': return setMapEnterArea(params, callback);
-				case 'map_area_clear': return setMapAreaClear(callback);
-				case 'alchemist_build': return setAlchemistBuild(data, callback);
+				case 'map_enter_area': return setMapEnterArea(params, callback, target);
+				case 'map_area_clear': return setMapAreaClear(callback, target);
+				case 'alchemist_build': return setAlchemistBuild(data, callback, target);
+				case 'equip_new_item': return setEquipData(params, data, callback, target);
 			}
 
 		}

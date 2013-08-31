@@ -13,15 +13,10 @@ var alchemistLayer = BaseUILayer.extend({
         this.setMyItems(data);
         var size = cc.Director.getInstance().getWinSize();
 
-		var container = cc.LayerColor.create( cc.c4b(0,0,0,255), 420, 320 ),
-            menu = cc.Menu.create(),
-        	scrollView;
-        scrollView = cc.ScrollView.create( cc.size(420, 320), container );
-        scrollView.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
-		this.addChild(scrollView, 1);
-        scrollView.addChild(menu, 1);
+        var list = new MenuList();
+        list.init(420, 320, 50);
         
-        menu.setPosition(0, 0);
+        list.setPosition(0, 0);
         var index = 0;
         
 		for(var key in alchemistDefine){
@@ -33,8 +28,6 @@ var alchemistLayer = BaseUILayer.extend({
 
             var panel = cc.MenuItemSprite.create( cc.Sprite.create('res/rune/list_item.png', cc.rect(0,0,400,50)), null, null, this.alchemistBuild, this );
             panel.setUserData(key);
-            panel.setAnchorPoint(0, 0);
-            panel.setPosition( 10, 320 - index * 60 );
 
 			var targetNameLabel = cc.LabelTTF.create(itemDefine[key].name, 'Verdana', 14, cc.size(400, 16), cc.TEXT_ALIGNMENT_LEFT);
             if(isCanBuild){
@@ -50,14 +43,11 @@ var alchemistLayer = BaseUILayer.extend({
             materialLabel.setPosition(205, 15);
             panel.addChild(materialLabel, 1);
 
-            menu.addChild(panel, 1);
+            list.addItem(panel);
 
 		}
 
-        scrollView.setPosition(0, 0);
-
-        //scrollView.setViewSize(cc.size(420, 320));
-        //scrollView.setContentSize(cc.size(420, index *60));
+        this.addChild(list, 1);
 
         var mMenu = new menuLayer();
         mMenu.setPosition(size.width-30, 0);
@@ -74,25 +64,26 @@ var alchemistLayer = BaseUILayer.extend({
         }
     },
     checkCanBuild: function(key, materialLoop){
-        var materialCount = {};
+        var materialCount = {}, result = true;
         for(var i=0,len=alchemistDefine[key].length;i<len;i++){
-            if(alchemistDefine[key][i] in materialCount){
-                materialCount[alchemistDefine[key][i]]++;
+            var curr = alchemistDefine[key][i];
+            if(curr in materialCount){
+                materialCount[curr]++;
             }else{
-                materialCount[alchemistDefine[key][i]] = 1;
+                materialCount[curr] = 1;
             }
         }
         for(var k in materialCount){
             materialLoop && materialLoop(k, materialCount[k]);
             if(k in this.myItems){
                 if(materialCount[k]>this.myItems[k]){
-                    return false;
+                    result = false;
                 }
             }else{
-                return false;
+                result = false;
             }
         }
-        return true;
+        return result;
     },
     alchemistBuild: function(sender){
         var key = sender.getUserData(),
