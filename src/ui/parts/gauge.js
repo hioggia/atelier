@@ -43,7 +43,10 @@ var Gauge = cc.Layer.extend({
 		this._nowValue = newValue;
 		this.gauge.runAction(act);
 
-		this.label.setString( this._prefixText + this._nowValue + '/' + this._maxValue );
+		this.label.setString( this._prefixText + this._nowValue + '/' + this._maxValue + this._extendText );
+	},
+	addValue: function(addtionalValue){
+		this.changeValue( this._nowValue + addtionalValue );
 	},
 	resetValue: function(defaultValue, maxValue, prefixText, extendText){
 		this._maxValue = maxValue;
@@ -52,7 +55,7 @@ var Gauge = cc.Layer.extend({
 		this._extendText = extendText || '';
 		
 		this.gauge.setPercentage(this._nowValue/this._maxValue*100);
-		this.label.setString( this._prefixText + this._nowValue + '/' + this._maxValue );
+		this.label.setString( this._prefixText + this._nowValue + '/' + this._maxValue + this._extendText );
 	}
 
 });

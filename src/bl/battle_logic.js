@@ -104,25 +104,30 @@ battleLogic.prototype = {
 			如果选中的符文达到三枚，那么开始判定是否连击
 			仅当同一花色的符文并且三枚连续或相同时才可以连击
 			返回值0: 继续选牌
-			     1： 连击，新一轮的Part
-			     2： 结束这次的Turn
+			     -1：结束这次的Turn
+			     1： 连击，增加1点STR
+			     2： 连击，增加2点STR
 		*/
 		if(this.partRunesLength == 3){
-			var arr = [];
+			var arr = [], ten = undefined;
 			for(var key in this.partRunes){
-				arr.push(this.partRunes[key]);
+				if(ten == undefined){
+					ten = runeDefine[this.partRunes[key]].ten;
+				}
+				if(ten != runeDefine[this.partRunes[key]].ten){
+					return -1;
+				}
+				arr.push(runeDefine[this.partRunes[key]].one);
 			}
 			arr.sort();
-			if(runeDefine[arr[0]].ten == runeDefine[arr[1]].ten && runeDefine[arr[0]].ten == runeDefine[arr[2]].ten){
-				if(arr[0] == arr[1] && arr[0] == arr[2]){
-					return 1;
-				}else if(runeDefine[arr[0]].ten < 4 && arr[0]+1 == arr[1] && arr[0]+2 == arr[2]){
-					return 1;
-				}
+			if(arr[0] == arr[1] && arr[0] == arr[2]){
+				return 2;
+			}else if(ten < 4 && arr[0]+1 == arr[1] && arr[0]+2 == arr[2]){
+				return 1;
 			}
-			return 2;
+			return -1;
 		}else if(this.turnRunes[this.turn].length == 12 && this.partRunesLength == 2){
-			return 2;
+			return -1;
 		}
 		return 0;
 	},

@@ -23,6 +23,7 @@ var areaLayer = BaseUILayer.extend({
 	monsterName: null,
 	monsterHpGauge: null,
 	myHpGauge: null,
+	myComboGauge: null,
 	runeOperator: null,
 	runeActived: null,
 
@@ -75,9 +76,13 @@ var areaLayer = BaseUILayer.extend({
 		this.runeActived.setPosition(10, 180);
 		this.addChild(this.runeActived, 1);
 
-    	this.myHpGauge = Gauge.create( 0, this.myHp, this.myMaxHp, '' );
-    	this.myHpGauge.setPosition( size.width - 210, 150 );
+    	this.myHpGauge = Gauge.create( 0, this.myHp, this.myMaxHp, 'HP: ' );
+    	this.myHpGauge.setPosition( size.width - 210, 70 );
     	this.addChild(this.myHpGauge, 1);
+
+    	this.myComboGauge = Gauge.create( 1, 0, 10, 'STR: ' );
+    	this.myComboGauge.setPosition( size.width - 210, 90 );
+    	this.addChild(this.myComboGauge, 1);
 
     	this.fillRune();
     },
@@ -127,15 +132,16 @@ var areaLayer = BaseUILayer.extend({
     	var index = sender.getUserData();
     	var nowSelect = this.myRunes[0][index];
     	var selectResult = this.battleBL.select(index, nowSelect);
-		if(selectResult == 1){
+		if(selectResult > 0){
 			//可继续出牌
 			this.battleBL.runeConfirmed();
+			this.myComboGauge.addValue(selectResult);
 			var partSelect = this.battleBL.getPartSelectIndex();
 			for(var i=0,len=partSelect.length;i<len;i++){
 				this.myRunes[0].splice(partSelect[i], 1);
 			}
 			this.fillRune();
-		}else if(selectResult == 2){
+		}else if(selectResult == -1){
 			//出牌结束
 			this.battleBL.runeConfirmed();
 			var partSelect = this.battleBL.getPartSelectIndex();
@@ -190,7 +196,7 @@ var areaLayer = BaseUILayer.extend({
 				setData('map_area_clear','','',liveDungeon);
 			}else{
 				this.monsterName.setString( this.monUnits[0].name );
-				this.monsterHpGauge.changeValue(this.monUnits[0].hp, this.monUnits[0].maxHp);
+				this.monsterHpGauge.resetValue(this.monUnits[0].hp, this.monUnits[0].maxHp);
 				
 				this.newTurn();
 			}
